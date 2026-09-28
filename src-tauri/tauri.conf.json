@@ -22,16 +22,17 @@
       {
         "title": "TieZ",
         "label": "main",
-        "width": 352,
-        "height": 380,
-        "minWidth": 250,
-        "minHeight": 300,
+        "width": 372,
+        "height": 400,
+        "minWidth": 270,
+        "minHeight": 320,
         "resizable": true,
         "fullscreen": false,
         "transparent": true,
         "backgroundColor": "#00000000",
         "alwaysOnTop": false,
         "decorations": false,
+        "shadow": false,
         "devtools": true,
         "skipTaskbar": true,
         "visible": true,
@@ -57,7 +58,8 @@
           "description": "Main window capabilities",
           "windows": [
             "main",
-            "compact-preview"
+            "compact-preview",
+            "screenshot-*"
           ],
           "permissions": [
             "core:window:allow-start-dragging",
@@ -84,6 +86,7 @@
             "core:app:allow-version",
             "core:app:default",
             "dialog:allow-open",
+            "dialog:allow-save",
             "dialog:default",
             "fs:default",
             {

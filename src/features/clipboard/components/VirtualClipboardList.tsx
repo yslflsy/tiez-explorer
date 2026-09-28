@@ -45,6 +45,7 @@ const VirtualClipboardList = React.forwardRef<VirtualClipboardListHandle, Virtua
             isKeyboardMode,
             onScroll,
             compactMode,
+            simplifiedMode,
             header
         } = props;
 
@@ -123,11 +124,11 @@ const VirtualClipboardList = React.forwardRef<VirtualClipboardListHandle, Virtua
         // Memoized item renderer for Virtuoso
         const itemContent = useCallback((index: number, item: ClipboardEntry) => {
             return (
-                <div style={{ paddingBottom: compactMode ? 2 : 4 }}>
+                <div style={{ paddingBottom: simplifiedMode ? 0 : compactMode ? 2 : 4 }}>
                     {renderItem(item, index, index === 0)}
                 </div>
             );
-        }, [renderItem, compactMode]);
+        }, [renderItem, compactMode, simplifiedMode]);
 
         const components = useMemo(() => ({
             Header: ListHeader,
@@ -163,5 +164,4 @@ VirtualClipboardList.displayName = 'VirtualClipboardList';
 
 export { VirtualClipboardList };
 export default VirtualClipboardList;
-
 

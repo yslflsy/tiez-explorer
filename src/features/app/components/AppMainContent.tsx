@@ -40,6 +40,7 @@ interface AppMainContentProps {
   pinnedItems: ClipboardEntry[];
   unpinnedItems: ClipboardEntry[];
   compactMode: boolean;
+  simplifiedMode: boolean;
   selectedIndex: number;
   isKeyboardMode: boolean;
   virtualListRef: RefObject<VirtualClipboardListHandle | null>;
@@ -59,6 +60,7 @@ const SortableItem = ({
   renderItem,
   isFirst,
   compactMode,
+  simplifiedMode,
   onDragStart,
   onDragEnd
 }: {
@@ -67,6 +69,7 @@ const SortableItem = ({
   renderItem: RenderItem;
   isFirst?: boolean;
   compactMode: boolean;
+  simplifiedMode: boolean;
   onDragStart?: () => void;
   onDragEnd?: () => void;
 }) => {
@@ -82,10 +85,10 @@ const SortableItem = ({
       style={{
         listStyle: "none",
         overflow: "visible",
-        paddingTop: isFirst ? "4px" : undefined
+        paddingTop: isFirst && !simplifiedMode ? "4px" : undefined
       }}
     >
-      <div style={{ paddingBottom: compactMode ? "2px" : "4px" }}>
+      <div style={{ paddingBottom: simplifiedMode ? 0 : compactMode ? "2px" : "4px" }}>
         {renderItem(item, index, controls, true)}
       </div>
     </Reorder.Item>
@@ -113,6 +116,7 @@ const AppMainContent = ({
   pinnedItems,
   unpinnedItems,
   compactMode,
+  simplifiedMode,
   selectedIndex,
   isKeyboardMode,
   virtualListRef,
@@ -281,11 +285,18 @@ const AppMainContent = ({
   return (
     <>
       {filteredHistory.length > 0 && (
-        <div className="history-list-container">
+        <div className={`history-list-container${simplifiedMode ? " simplified-table" : ""}`}>
+          {simplifiedMode && (
+            <div className="simplified-table-header" role="row">
+              <span role="columnheader">{t("simplified_time")}</span>
+              <span role="columnheader">{t("simplified_content")}</span>
+            </div>
+          )}
           <VirtualClipboardList
             ref={virtualListRef}
             items={unpinnedItems}
             compactMode={compactMode}
+            simplifiedMode={simplifiedMode}
             selectedIndex={selectedIndex - pinnedItems.length}
             isKeyboardMode={isKeyboardMode}
             header={
@@ -305,6 +316,7 @@ const AppMainContent = ({
                       renderItem={renderItemContent}
                       isFirst={index === 0}
                       compactMode={compactMode}
+                      simplifiedMode={simplifiedMode}
                       onDragStart={handlePinnedDragStart}
                       onDragEnd={handlePinnedDragEnd}
                     />
@@ -316,7 +328,7 @@ const AppMainContent = ({
               const el = renderItemContent(item, pinnedItems.length + index, undefined, true);
               if (isFirst && pinnedItems.length === 0) {
                 return (
-                  <div className="first-virtual-item" style={{ height: "100%", paddingTop: "4px" }}>
+                  <div className="first-virtual-item" style={{ height: "100%", paddingTop: simplifiedMode ? 0 : "4px" }}>
                     {el}
                   </div>
                 );
@@ -346,4 +358,3 @@ const AppMainContent = ({
 };
 
 export default AppMainContent;
-

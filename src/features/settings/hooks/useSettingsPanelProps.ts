@@ -11,11 +11,12 @@ interface UseSettingsPanelPropsOptions {
   language: Locale;
   colorMode: string;
   hotkeyParts: string[];
-  checkHotkeyConflict: (newHotkey: string, mode: "main" | "sequential" | "rich" | "search") => boolean;
+  checkHotkeyConflict: (newHotkey: string, mode: "main" | "sequential" | "rich" | "search" | "screenshot") => boolean;
   updateHotkey: (key: string) => void;
   updateSequentialHotkey: (key: string) => void;
   updateRichPasteHotkey: (key: string) => void;
   updateSearchHotkey: (key: string) => void;
+  updateScreenshotHotkey: (key: string) => void;
   saveAppSetting: (key: string, val: string) => void;
   saveSetting: (key: string, val: string) => void;
   saveMqtt: (key: string, val: string) => void;
@@ -38,6 +39,7 @@ export const useSettingsPanelProps = ({
   updateSequentialHotkey,
   updateRichPasteHotkey,
   updateSearchHotkey,
+  updateScreenshotHotkey,
   saveAppSetting,
   saveSetting,
   saveMqtt,
@@ -70,6 +72,8 @@ export const useSettingsPanelProps = ({
     isRecordingRich,
     searchHotkey,
     isRecordingSearch,
+    screenshotHotkey,
+    isRecordingScreenshot,
     quickPasteModifier,
     setQuickPasteModifier,
     privacyProtection,
@@ -165,6 +169,7 @@ export const useSettingsPanelProps = ({
     setIsRecordingSequential,
     setIsRecordingRich,
     setIsRecordingSearch,
+    setIsRecordingScreenshot,
     setPrivacyProtection,
     setShowHotkeyHint,
     setIsRecording,
@@ -254,6 +259,8 @@ export const useSettingsPanelProps = ({
     isRecordingRich,
     searchHotkey,
     isRecordingSearch,
+    screenshotHotkey,
+    isRecordingScreenshot,
     quickPasteModifier,
     setQuickPasteModifier,
     privacyProtection,
@@ -355,6 +362,8 @@ export const useSettingsPanelProps = ({
     updateRichPasteHotkey,
     setIsRecordingSearch,
     updateSearchHotkey,
+    setIsRecordingScreenshot,
+    updateScreenshotHotkey,
     setPrivacyProtection,
     setShowHotkeyHint,
     setIsRecording,

@@ -1,0 +1,233 @@
+.main-content.simplified-mode {
+  padding: 0;
+  gap: 0;
+}
+
+.history-list-container.simplified-table {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.simplified-table-header {
+  height: 26px;
+  flex: 0 0 26px;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.simplified-table-header span {
+  padding: 0 8px;
+}
+
+.simplified-table-header span + span {
+  border-left: 1px solid var(--line-soft);
+}
+
+.simplified-table .virtual-list-wrapper {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto !important;
+}
+
+.simplified-table .virtual-list-wrapper .virtuoso-scroller {
+  width: 100%;
+  margin-right: 0;
+  padding: 0;
+}
+
+.history-item.simplified-item {
+  height: 23px;
+  min-height: 23px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  font-size: 12px;
+}
+
+.history-item.simplified-item:hover,
+.history-item.simplified-item.selected {
+  background: var(--accent-soft);
+  box-shadow: none;
+  transform: none;
+}
+
+.simplified-time {
+  flex: 0 0 112px;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-right: 1px solid var(--line-soft);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.simplified-content {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.simplified-pin,
+.simplified-drag {
+  flex: 0 0 auto;
+  color: var(--accent-color);
+}
+
+.simplified-drag {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.simplified-menu-trigger {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0.45;
+}
+
+.simplified-item:hover .simplified-menu-trigger,
+.simplified-menu-trigger:focus-visible {
+  opacity: 1;
+}
+
+.simplified-menu-trigger:hover,
+.simplified-menu-trigger[aria-expanded="true"] {
+  background: var(--bg-button);
+  color: var(--text-primary);
+}
+
+.simplified-preview,
+.simplified-menu {
+  --simplified-popover-bg: #ffffff;
+}
+
+body.dark-mode .simplified-preview,
+body.dark-mode .simplified-menu {
+  --simplified-popover-bg: #25282e;
+}
+
+.simplified-preview,
+.simplified-menu {
+  position: fixed;
+  z-index: 10000;
+  max-height: min(50vh, 360px);
+  overflow: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--simplified-popover-bg);
+  color: var(--text-primary);
+  box-shadow: 0 12px 32px rgba(10, 20, 32, 0.38);
+}
+
+.simplified-preview {
+  padding: 10px 12px;
+  pointer-events: none;
+}
+
+.simplified-preview-heading {
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.simplified-preview-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.simplified-preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.simplified-menu {
+  padding: 4px;
+}
+
+.simplified-menu > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.simplified-menu > button:hover {
+  background: var(--accent-soft);
+}
+
+.simplified-tag-editor {
+  padding: 4px;
+}
+
+.simplified-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.simplified-tag-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-button);
+  color: inherit;
+  cursor: pointer;
+}
+
+.simplified-tag-editor input {
+  width: 100%;
+  box-sizing: border-box;
+  border: var(--input-border);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}

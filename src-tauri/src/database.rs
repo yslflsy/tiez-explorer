@@ -296,7 +296,7 @@ pub fn seed_defaults(conn: &Connection) -> Result<()> {
         [],
     );
     let _ = conn.execute(
-        "INSERT OR IGNORE INTO settings (key, value) VALUES ('app.surface_opacity', '50')",
+        "INSERT OR IGNORE INTO settings (key, value) VALUES ('app.surface_opacity', '100')",
         [],
     );
     let _ = conn.execute(

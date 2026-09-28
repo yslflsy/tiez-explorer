@@ -7,4 +7,5 @@ pub mod encryption_queue;
 pub mod file_transfer;
 pub mod mqtt_sub;
 pub mod paste_queue;
+pub mod screenshot;
 pub mod sensitive_align;

@@ -2,7 +2,9 @@ import type { RefObject } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronLeft,
+  Camera,
   MessageSquare,
+  List,
   Pin,
   PinOff,
   Search,
@@ -29,6 +31,8 @@ interface AppHeaderProps {
   fileServerEnabled: boolean;
   isWindowPinned: boolean;
   setIsWindowPinned: (val: boolean) => void;
+  simplifiedMode: boolean;
+  onToggleSimplifiedMode: () => void;
   clearHistory: () => void;
   showSearchBox: boolean;
   search: string;
@@ -64,6 +68,8 @@ const AppHeader = ({
   fileServerEnabled,
   isWindowPinned,
   setIsWindowPinned,
+  simplifiedMode,
+  onToggleSimplifiedMode,
   clearHistory,
   showSearchBox,
   search,
@@ -134,6 +140,23 @@ const AppHeader = ({
 
         {!showSettings && !showTagManager && !showEmojiPanel && (
           <>
+            <button
+              className={`btn-icon ${simplifiedMode ? 'active' : ''}`}
+              type="button"
+              title={t(simplifiedMode ? 'exit_simplified_mode' : 'simplified_mode')}
+              aria-label={t(simplifiedMode ? 'exit_simplified_mode' : 'simplified_mode')}
+              aria-pressed={simplifiedMode}
+              onClick={onToggleSimplifiedMode}
+            >
+              <List size={16} />
+            </button>
+            <button
+              className="btn-icon"
+              title={t('screenshot') || '截图 (Alt+A)'}
+              onClick={() => invoke("start_screenshot").catch(console.error)}
+            >
+              <Camera size={16} />
+            </button>
             <button className="btn-icon" title={t('clear_history')} onClick={clearHistory}>
               <Trash2 size={16} />
             </button>

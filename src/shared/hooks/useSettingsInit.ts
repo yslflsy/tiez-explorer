@@ -12,6 +12,7 @@ interface UseSettingsInitOptions {
   setTheme: (val: string) => void;
   setColorMode: (val: string) => void;
   setCompactMode: (val: boolean) => void;
+  setSimplifiedMode?: (val: boolean) => void;
   setLanguage: (val: Locale) => void;
 }
 
@@ -21,6 +22,7 @@ export const useSettingsInit = ({
   setTheme,
   setColorMode,
   setCompactMode,
+  setSimplifiedMode,
   setLanguage
 }: UseSettingsInitOptions) => {
   const [settings, setSettings] = useState<Record<string, string> | null>(null);
@@ -67,6 +69,7 @@ export const useSettingsInit = ({
           setTheme(loadedTheme);
           setColorMode(loadedColorMode);
           setCompactMode(result["app.compact_mode"] === "true");
+          setSimplifiedMode?.(result["app.simplified_mode"] === "true");
 
           try {
             localStorage.setItem("tiez_theme", loadedTheme);
@@ -98,7 +101,7 @@ export const useSettingsInit = ({
       disposed = true;
       unlisten.then((off) => off());
     };
-  }, [setAppSettings, setHotkey, setTheme, setColorMode, setCompactMode, setLanguage]);
+  }, [setAppSettings, setHotkey, setTheme, setColorMode, setCompactMode, setSimplifiedMode, setLanguage]);
 
   return settings;
 };

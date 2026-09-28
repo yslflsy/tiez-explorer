@@ -41,8 +41,6 @@ import { useListSelectionReset } from "./shared/hooks/useListSelectionReset";
 import { useSearchFetchTrigger } from "./shared/hooks/useSearchFetchTrigger";
 import { useScrollToSelection } from "./shared/hooks/useScrollToSelection";
 import { useClipboardItemRenderer } from "./shared/hooks/useClipboardItemRenderer";
-import { AnnouncementSystem } from "./shared/components/Announcement";
-import { useAnnouncements } from "./shared/hooks/useAnnouncements";
 import { useOverlays } from "./shared/hooks/useOverlays";
 import { useAutoUpdate } from "./shared/hooks/useAutoUpdate";
 import UpdateDialog from "./shared/components/UpdateDialog";
@@ -186,6 +184,8 @@ const App = () => {
     setRichPasteHotkey,
     searchHotkey,
     setSearchHotkey,
+    screenshotHotkey,
+    setScreenshotHotkey,
     quickPasteModifier,
     setQuickPasteModifier,
     sequentialMode,
@@ -198,6 +198,8 @@ const App = () => {
     setIsRecordingRich,
     isRecordingSearch,
     setIsRecordingSearch,
+    isRecordingScreenshot,
+    setIsRecordingScreenshot,
     deleteAfterPaste,
     setDeleteAfterPaste,
     moveToTopAfterPaste,
@@ -240,6 +242,8 @@ const App = () => {
 
     compactMode,
     setCompactMode,
+    simplifiedMode,
+    setSimplifiedMode,
     clipboardItemFontSize,
     setClipboardItemFontSize,
     clipboardTagFontSize,
@@ -547,8 +551,6 @@ const App = () => {
       .catch(console.error);
   }, [setFileTransferPath]);
 
-  const { announcements, dismissAnnouncement } = useAnnouncements();
-
   const tagManagerSizeRef = useRef<{ width: number; height: number } | null>(null);
 
   const settings = useSettingsInit({
@@ -557,6 +559,7 @@ const App = () => {
     setTheme,
     setColorMode,
     setCompactMode,
+    setSimplifiedMode,
     setLanguage
   });
 
@@ -630,6 +633,7 @@ const App = () => {
     setSequentialHotkey,
     setRichPasteHotkey,
     setSearchHotkey,
+    setScreenshotHotkey,
     setQuickPasteModifier,
     setSequentialModeState,
     setSoundEnabled,
@@ -863,7 +867,8 @@ const App = () => {
     updateHotkey,
     updateSequentialHotkey,
     updateRichPasteHotkey,
-    updateSearchHotkey
+    updateSearchHotkey,
+    updateScreenshotHotkey
   } =
     useHotkeyConfig({
       hotkey,
@@ -874,6 +879,8 @@ const App = () => {
       setRichPasteHotkey,
       searchHotkey,
       setSearchHotkey,
+      screenshotHotkey,
+      setScreenshotHotkey,
       sequentialMode,
       isRecording,
       setIsRecording,
@@ -883,6 +890,8 @@ const App = () => {
       setIsRecordingRich,
       isRecordingSearch,
       setIsRecordingSearch,
+      isRecordingScreenshot,
+      setIsRecordingScreenshot,
       saveAppSetting,
       t,
       pushToast
@@ -990,6 +999,7 @@ const App = () => {
     t,
     showSourceAppIcon,
     compactMode,
+    simplifiedMode,
     richTextSnapshotPreview,
     sensitiveMaskPrefixVisible,
     sensitiveMaskSuffixVisible,
@@ -1022,6 +1032,7 @@ const App = () => {
     updateSequentialHotkey,
     updateRichPasteHotkey,
     updateSearchHotkey,
+    updateScreenshotHotkey,
     saveAppSetting,
     saveSetting,
     saveMqtt,
@@ -1051,6 +1062,12 @@ const App = () => {
         fileServerEnabled={fileServerEnabled}
         isWindowPinned={isWindowPinned}
         setIsWindowPinned={setIsWindowPinned}
+        simplifiedMode={simplifiedMode}
+        onToggleSimplifiedMode={() => {
+          const next = !simplifiedMode;
+          setSimplifiedMode(next);
+          void saveAppSetting("simplified_mode", String(next));
+        }}
         clearHistory={clearHistory}
         showSearchBox={showSearchBox}
         search={search}
@@ -1072,13 +1089,8 @@ const App = () => {
         onToggleChat={handleToggleHeaderChat}
       />
 
-      <AnnouncementSystem
-        announcements={announcements}
-        onDismiss={dismissAnnouncement}
-      />
-
       <main
-        className={`main-content${chatMode ? " file-transfer-mode" : ""}${effectiveShowTagManager ? " tag-manager-mode" : ""}`}
+        className={`main-content${chatMode ? " file-transfer-mode" : ""}${effectiveShowTagManager ? " tag-manager-mode" : ""}${simplifiedMode && !showSettings && !effectiveShowTagManager && !effectiveShowEmojiPanel ? " simplified-mode" : ""}`}
         style={{ 
           overflowY: (showSettings || effectiveShowTagManager) ? 'auto' : 'hidden',
           padding: effectiveShowTagManager ? '0' : undefined
@@ -1106,6 +1118,7 @@ const App = () => {
           pinnedItems={pinnedItems}
           unpinnedItems={unpinnedItems}
           compactMode={compactMode}
+          simplifiedMode={simplifiedMode}
           selectedIndex={selectedIndex}
           isKeyboardMode={isKeyboardMode}
           virtualListRef={virtualListRef}

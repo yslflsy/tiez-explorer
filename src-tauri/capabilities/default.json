@@ -4,7 +4,8 @@
   "description": "Capability for the main window",
   "windows": [
     "main",
-    "compact-preview"
+    "compact-preview",
+    "screenshot-*"
   ],
   "permissions": [
     "core:default",
@@ -38,6 +39,7 @@
     "sql:default",
     "dialog:default",
     "dialog:allow-open",
+    "dialog:allow-save",
     "window-state:default",
     "process:allow-restart",
     "updater:allow-check",

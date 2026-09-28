@@ -106,6 +106,19 @@ pub fn init(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(target_os = "windows")]
     setup_taskbar_listener(app);
 
+    if std::env::args().any(|arg| arg == "--screenshot") {
+        let screenshot_app = app_handle.clone();
+        tauri::async_runtime::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            if let Err(error) =
+                crate::services::screenshot::begin_screenshot(screenshot_app.clone()).await
+            {
+                crate::error!(">>> [SCREENSHOT] Failed to start: {}", error);
+                let _ = screenshot_app.emit("screenshot-error", error.to_string());
+            }
+        });
+    }
+
     Ok(())
 }
 
@@ -188,6 +201,7 @@ pub struct StartupSettings {
     pub sequential_hotkey: String,
     pub rich_paste_hotkey: String,
     pub search_hotkey: String,
+    pub screenshot_hotkey: String,
     pub quick_paste_modifier: String,
     pub sound_enabled: bool,
     pub hide_tray_icon: bool,
@@ -280,6 +294,10 @@ fn load_settings(repo: &impl SettingsRepository) -> StartupSettings {
             .get("app.search_hotkey")
             .unwrap_or(Some("Alt+F".to_string()))
             .unwrap_or("Alt+F".to_string()),
+        screenshot_hotkey: repo
+            .get("app.screenshot_hotkey")
+            .unwrap_or(Some("Alt+A".to_string()))
+            .unwrap_or("Alt+A".to_string()),
         quick_paste_modifier: repo
             .get("app.quick_paste_modifier")
             .unwrap_or(Some("disabled".to_string()))
@@ -381,6 +399,7 @@ fn setup_state(
         sequential_paste_hotkey: std::sync::Mutex::new(s.sequential_hotkey.clone()),
         rich_paste_hotkey: std::sync::Mutex::new(s.rich_paste_hotkey.clone()),
         search_hotkey: std::sync::Mutex::new(s.search_hotkey.clone()),
+        screenshot_hotkey: std::sync::Mutex::new(s.screenshot_hotkey.clone()),
         quick_paste_modifier: std::sync::Mutex::new(s.quick_paste_modifier.clone()),
         sound_enabled: AtomicBool::new(s.sound_enabled),
         hide_tray_icon: AtomicBool::new(s.hide_tray_icon),
@@ -412,6 +431,8 @@ fn setup_state(
         std::sync::Mutex::new(std::collections::HashMap::new()),
     ));
     app.manage(PasteQueue::default());
+    app.manage(crate::services::screenshot::ScreenshotState::default());
+    app.manage(crate::services::screenshot::PinnedScreenshotState::default());
 }
 
 fn setup_main_window(app: &App, s: &StartupSettings) {
@@ -790,7 +811,7 @@ fn start_edge_docking_monitor(app_handle: AppHandle) {
                     continue;
                 }
 
-                let hide_size = 3;
+                let hide_size = (10.0 * monitor.scale_factor()).round() as i32 + 3;
 
                 let mut dock = DockPosition::None;
                 if rect.top <= screen_top + threshold {
@@ -1178,9 +1199,38 @@ pub fn handle_global_shortcut(app: &AppHandle, shortcut: &tauri_plugin_global_sh
             let _ = app.emit("focus-search-input", ());
         }
     }
+
+    if let Ok(screenshot_s) = {
+        let val = settings.screenshot_hotkey.lock().unwrap().clone();
+        val.replace("Win", "Super").parse::<Shortcut>()
+    } {
+        if shortcut == &screenshot_s {
+            let app = app.clone();
+            tauri::async_runtime::spawn(async move {
+                if let Err(error) = crate::services::screenshot::begin_screenshot(app.clone()).await
+                {
+                    let _ = app.emit("screenshot-error", error.to_string());
+                }
+            });
+        }
+    }
 }
 
 pub fn handle_window_event(window: &tauri::Window, event: &tauri::WindowEvent) {
+    if window.label().starts_with("screenshot-") {
+        match event {
+            tauri::WindowEvent::CloseRequested { .. } => {
+                crate::info!(
+                    ">>> [SCREENSHOT] Overlay {} received CloseRequested",
+                    window.label()
+                );
+            }
+            tauri::WindowEvent::Destroyed => {
+                crate::info!(">>> [SCREENSHOT] Overlay {} destroyed", window.label());
+            }
+            _ => {}
+        }
+    }
     match event {
         tauri::WindowEvent::Focused(focused) => {
             if window.label() != "main" {

@@ -1,0 +1,366 @@
+html:has(.screenshot-overlay),
+body:has(.screenshot-overlay),
+html:has(.screenshot-pin-root),
+body:has(.screenshot-pin-root) {
+  border-radius: 0;
+  background: #111;
+}
+
+#root:has(.screenshot-overlay),
+#root:has(.screenshot-pin-root) {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #111;
+  overflow: hidden;
+}
+
+html:has(.screenshot-pin-root),
+body:has(.screenshot-pin-root),
+#root:has(.screenshot-pin-root) {
+  background: transparent;
+}
+
+#root:has(.screenshot-pin-root) {
+  overflow: visible;
+}
+
+.screenshot-overlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+  cursor: crosshair;
+}
+
+.screenshot-overlay.is-busy {
+  cursor: wait;
+}
+
+.screenshot-source {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.screenshot-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.screenshot-size-label {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: calc(100vw - 8px);
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(12, 18, 27, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff;
+  font: 12px/1.2 "Cascadia Code", Consolas, monospace;
+  white-space: nowrap;
+}
+
+.screenshot-hover-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.screenshot-hover-swatch {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 2px;
+}
+
+.screenshot-size-inputs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.screenshot-region-grip {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #c6d1df;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.screenshot-region-grip:hover:not(:disabled),
+.screenshot-region-grip:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.screenshot-region-grip:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.screenshot-region-grip.is-dragging {
+  cursor: grabbing;
+}
+
+.screenshot-region-grip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.screenshot-dimension {
+  width: 56px;
+  height: 24px;
+  padding: 2px 3px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  appearance: textfield;
+}
+
+.screenshot-dimension::-webkit-inner-spin-button,
+.screenshot-dimension::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.screenshot-dimension:hover,
+.screenshot-dimension:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  outline: none;
+}
+
+.screenshot-color-copy-hint {
+  font: 11px/1.2 "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #c6d1df;
+}
+
+.screenshot-toolbar {
+  position: absolute;
+  z-index: 6;
+  height: 48px;
+  max-width: calc(100vw - 16px);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 6px;
+  transform: translateX(-50%);
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 7px;
+  background: rgba(250, 252, 255, 0.98);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  cursor: default;
+  scrollbar-width: none;
+}
+
+.screenshot-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.screenshot-tool-button {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+}
+
+.screenshot-tool-button:hover:not(:disabled) {
+  background: #e8eef7;
+  color: #0f172a;
+}
+
+.screenshot-tool-button.active {
+  background: #dce9ff;
+  color: #1769e0;
+}
+
+.screenshot-tool-button.confirm {
+  color: #0b9b68;
+}
+
+.screenshot-tool-button.cancel {
+  color: #e14848;
+}
+
+.screenshot-tool-button:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.screenshot-toolbar-separator {
+  width: 1px;
+  height: 28px;
+  flex: 0 0 1px;
+  margin: 0 3px;
+  background: #d9e0ea;
+}
+
+.screenshot-color {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  padding: 4px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.screenshot-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.screenshot-color::-webkit-color-swatch {
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+}
+
+.screenshot-width {
+  width: 58px;
+  flex: 0 0 58px;
+  accent-color: #1769e0;
+}
+
+.screenshot-font-size {
+  width: 54px;
+  height: 30px;
+  flex: 0 0 54px;
+  padding: 0 5px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #fff;
+  color: #172033;
+  font: 13px/1 "Segoe UI", sans-serif;
+}
+
+.screenshot-background-color:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.screenshot-text-editor {
+  position: absolute;
+  z-index: 7;
+  width: 240px;
+  min-height: 72px;
+  resize: both;
+  padding: 6px 8px;
+  border: 1px solid #22c98a;
+  border-radius: 6px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #111827;
+  font: 20px/1.35 "Segoe UI", "Microsoft YaHei", sans-serif;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+  user-select: text;
+}
+
+.screenshot-error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  max-width: min(520px, calc(100vw - 40px));
+  padding: 14px 18px;
+  border-radius: 6px;
+  background: rgba(127, 29, 29, 0.94);
+  color: #fff;
+  font-size: 14px;
+}
+
+.screenshot-pin-root {
+  position: fixed;
+  inset: 10px;
+  overflow: hidden;
+  background: #111;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: grab;
+  user-select: none;
+}
+
+.screenshot-pin-root:active {
+  cursor: grabbing;
+}
+
+.screenshot-pin-root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.screenshot-pin-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.screenshot-pin-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(16, 24, 38, 0.82);
+  color: #fff;
+  opacity: 1;
+  cursor: pointer;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.screenshot-pin-close:hover {
+  background: rgba(190, 36, 47, 0.94);
+}
+
+.screenshot-pin-error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: #1f2937;
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}

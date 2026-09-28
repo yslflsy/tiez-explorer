@@ -23,6 +23,7 @@ pub struct SettingsState {
     pub sequential_paste_hotkey: Mutex<String>,
     pub rich_paste_hotkey: Mutex<String>,
     pub search_hotkey: Mutex<String>,
+    pub screenshot_hotkey: Mutex<String>,
     pub quick_paste_modifier: Mutex<String>,
     pub sound_enabled: AtomicBool,
     pub hide_tray_icon: AtomicBool,

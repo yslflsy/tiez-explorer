@@ -85,6 +85,24 @@ pub fn set_search_hotkey(
 }
 
 #[tauri::command]
+pub fn set_screenshot_hotkey(
+    app_handle: AppHandle,
+    state: State<'_, SettingsState>,
+    hotkey: String,
+) -> AppResult<()> {
+    if let Ok(mut guard) = state.screenshot_hotkey.lock() {
+        *guard = hotkey.clone();
+    }
+
+    let db_state = app_handle.state::<DbState>();
+    db_state
+        .settings_repo
+        .set("app.screenshot_hotkey", &hotkey)
+        .map_err(AppError::from)?;
+    crate::app::commands::hotkey_cmd::sync_registered_hotkeys(&app_handle)
+}
+
+#[tauri::command]
 pub fn set_deduplication(
     app_handle: AppHandle,
     state: State<'_, crate::app_state::SettingsState>,

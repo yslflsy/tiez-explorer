@@ -86,6 +86,8 @@ export interface AppState {
   setRichPasteHotkey: StateSetter<string>;
   searchHotkey: string;
   setSearchHotkey: StateSetter<string>;
+  screenshotHotkey: string;
+  setScreenshotHotkey: StateSetter<string>;
   quickPasteModifier: QuickPasteModifier;
   setQuickPasteModifier: StateSetter<QuickPasteModifier>;
   sequentialMode: boolean;
@@ -98,6 +100,8 @@ export interface AppState {
   setIsRecordingRich: StateSetter<boolean>;
   isRecordingSearch: boolean;
   setIsRecordingSearch: StateSetter<boolean>;
+  isRecordingScreenshot: boolean;
+  setIsRecordingScreenshot: StateSetter<boolean>;
   deleteAfterPaste: boolean;
   setDeleteAfterPaste: StateSetter<boolean>;
   moveToTopAfterPaste: boolean;
@@ -145,6 +149,8 @@ export interface AppState {
 
   compactMode: boolean;
   setCompactMode: StateSetter<boolean>;
+  simplifiedMode: boolean;
+  setSimplifiedMode: StateSetter<boolean>;
   clipboardItemFontSize: number;
   setClipboardItemFontSize: StateSetter<number>;
   clipboardTagFontSize: number;

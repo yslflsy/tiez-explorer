@@ -758,7 +758,10 @@ fn generate_cf_html(html: &str) -> String {
     );
     format!("{}{}", header, html_content)
 }
-fn copy_image_bytes_to_clipboard(bytes: Vec<u8>, current_time: u64) -> AppResult<(u64, u64, u64)> {
+pub(crate) fn copy_image_bytes_to_clipboard(
+    bytes: Vec<u8>,
+    current_time: u64,
+) -> AppResult<(u64, u64, u64)> {
     // Check if it's a GIF by magic number
     let is_gif = bytes.len() > 3 && &bytes[0..3] == b"GIF";
 

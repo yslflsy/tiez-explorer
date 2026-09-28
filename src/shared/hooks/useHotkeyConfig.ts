@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 
-type HotkeyMode = "main" | "sequential" | "rich" | "search";
+type HotkeyMode = "main" | "sequential" | "rich" | "search" | "screenshot";
 
 interface UseHotkeyConfigOptions {
   hotkey: string;
@@ -13,6 +13,8 @@ interface UseHotkeyConfigOptions {
   setRichPasteHotkey: (val: string) => void;
   searchHotkey: string;
   setSearchHotkey: (val: string) => void;
+  screenshotHotkey: string;
+  setScreenshotHotkey: (val: string) => void;
   sequentialMode: boolean;
   isRecording: boolean;
   setIsRecording: (val: boolean) => void;
@@ -22,6 +24,8 @@ interface UseHotkeyConfigOptions {
   setIsRecordingRich: (val: boolean) => void;
   isRecordingSearch: boolean;
   setIsRecordingSearch: (val: boolean) => void;
+  isRecordingScreenshot: boolean;
+  setIsRecordingScreenshot: (val: boolean) => void;
   saveAppSetting: (type: string, value: string) => void;
   t: (key: string) => string;
   pushToast: (msg: string, duration?: number) => number;
@@ -36,6 +40,8 @@ export const useHotkeyConfig = ({
   setRichPasteHotkey,
   searchHotkey,
   setSearchHotkey,
+  screenshotHotkey,
+  setScreenshotHotkey,
   sequentialMode,
   isRecording,
   setIsRecording,
@@ -45,6 +51,8 @@ export const useHotkeyConfig = ({
   setIsRecordingRich,
   isRecordingSearch,
   setIsRecordingSearch,
+  isRecordingScreenshot,
+  setIsRecordingScreenshot,
   saveAppSetting,
   t,
   pushToast
@@ -64,6 +72,9 @@ export const useHotkeyConfig = ({
       if (mode !== "search" && newHotkey === searchHotkey) {
         conflicts.push(t("search_hotkey_label"));
       }
+      if (mode !== "screenshot" && newHotkey === screenshotHotkey) {
+        conflicts.push(t("screenshot_hotkey_label"));
+      }
 
       if (conflicts.length > 0) {
         const msg = t("hotkey_conflict_toast").replace("{name}", conflicts[0]);
@@ -72,11 +83,15 @@ export const useHotkeyConfig = ({
       }
       return false;
     },
-    [hotkey, sequentialMode, sequentialHotkey, richPasteHotkey, searchHotkey, t, pushToast]
+    [hotkey, sequentialMode, sequentialHotkey, richPasteHotkey, searchHotkey, screenshotHotkey, t, pushToast]
   );
 
   const updateHotkey = useCallback(
     async (newHotkey: string) => {
+      if (newHotkey === hotkey) {
+        setIsRecording(false);
+        return;
+      }
       const hasConflict = checkHotkeyConflict(newHotkey, "main");
       if (hasConflict) {
         setIsRecording(false);
@@ -104,7 +119,7 @@ export const useHotkeyConfig = ({
       });
       setIsRecording(false);
     },
-    [checkHotkeyConflict, pushToast, saveAppSetting, setHotkey, setIsRecording, t]
+    [checkHotkeyConflict, hotkey, pushToast, saveAppSetting, setHotkey, setIsRecording, t]
   );
 
   const updateSequentialHotkey = useCallback(
@@ -206,18 +221,48 @@ export const useHotkeyConfig = ({
     ]
   );
 
+  const updateScreenshotHotkey = useCallback(
+    async (newHotkey: string) => {
+      if (newHotkey === screenshotHotkey || checkHotkeyConflict(newHotkey, "screenshot")) {
+        setIsRecordingScreenshot(false);
+        return;
+      }
+
+      if (newHotkey) {
+        try {
+          await invoke<boolean>("test_hotkey_available", { hotkey: newHotkey });
+        } catch (err) {
+          pushToast(`${newHotkey}: ${err || "快捷键被占用"}`, 5000);
+          setIsRecordingScreenshot(false);
+          return;
+        }
+      }
+
+      try {
+        await invoke("set_screenshot_hotkey", { hotkey: newHotkey });
+        setScreenshotHotkey(newHotkey);
+        saveAppSetting("screenshot_hotkey", newHotkey);
+      } catch (err) {
+        pushToast(t("hotkey_register_failed") + String(err), 5000);
+      }
+      setIsRecordingScreenshot(false);
+    },
+    [checkHotkeyConflict, pushToast, saveAppSetting, screenshotHotkey, setIsRecordingScreenshot, setScreenshotHotkey, t]
+  );
+
   useEffect(() => {
     invoke("set_recording_mode", {
       enabled: isRecording || isRecordingSequential || isRecordingRich
-        || isRecordingSearch
+        || isRecordingSearch || isRecordingScreenshot
     }).catch(console.error);
 
-    if (isRecording || isRecordingSequential || isRecordingRich || isRecordingSearch) {
+    if (isRecording || isRecordingSequential || isRecordingRich || isRecordingSearch || isRecordingScreenshot) {
       const unlisten = listen<string>("hotkey-recorded", (event) => {
         if (isRecording) updateHotkey(event.payload);
         if (isRecordingSequential) updateSequentialHotkey(event.payload);
         if (isRecordingRich) updateRichPasteHotkey(event.payload);
         if (isRecordingSearch) updateSearchHotkey(event.payload);
+        if (isRecordingScreenshot) updateScreenshotHotkey(event.payload);
       });
 
       const unlistenCancel = listen("recording-cancelled", () => {
@@ -225,6 +270,7 @@ export const useHotkeyConfig = ({
         setIsRecordingSequential(false);
         setIsRecordingRich(false);
         setIsRecordingSearch(false);
+        setIsRecordingScreenshot(false);
       });
 
       return () => {
@@ -237,14 +283,17 @@ export const useHotkeyConfig = ({
     isRecordingSequential,
     isRecordingRich,
     isRecordingSearch,
+    isRecordingScreenshot,
     setIsRecording,
     setIsRecordingSequential,
     setIsRecordingRich,
     setIsRecordingSearch,
+    setIsRecordingScreenshot,
     updateHotkey,
     updateSequentialHotkey,
     updateRichPasteHotkey,
-    updateSearchHotkey
+    updateSearchHotkey,
+    updateScreenshotHotkey
   ]);
 
   return {
@@ -252,6 +301,7 @@ export const useHotkeyConfig = ({
     updateHotkey,
     updateSequentialHotkey,
     updateRichPasteHotkey,
-    updateSearchHotkey
+    updateSearchHotkey,
+    updateScreenshotHotkey
   };
 };

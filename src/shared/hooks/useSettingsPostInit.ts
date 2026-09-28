@@ -97,6 +97,7 @@ interface UseSettingsPostInitOptions {
   setSequentialHotkey: (val: string) => void;
   setRichPasteHotkey: (val: string) => void;
   setSearchHotkey: (val: string) => void;
+  setScreenshotHotkey: (val: string) => void;
   setQuickPasteModifier: (val: QuickPasteModifier) => void;
   setSequentialModeState: (val: boolean) => void;
   setSoundEnabled: (val: boolean) => void;
@@ -183,6 +184,7 @@ export const useSettingsPostInit = ({
   setSequentialHotkey,
   setRichPasteHotkey,
   setSearchHotkey,
+  setScreenshotHotkey,
   setQuickPasteModifier,
   setSequentialModeState,
   setSoundEnabled,
@@ -382,6 +384,7 @@ export const useSettingsPostInit = ({
     if (settings["app.sequential_hotkey"]) setSequentialHotkey(settings["app.sequential_hotkey"]);
     if (settings["app.rich_paste_hotkey"]) setRichPasteHotkey(settings["app.rich_paste_hotkey"]);
     if (settings["app.search_hotkey"] !== undefined) setSearchHotkey(settings["app.search_hotkey"]);
+    if (settings["app.screenshot_hotkey"] !== undefined) setScreenshotHotkey(settings["app.screenshot_hotkey"]);
     setQuickPasteModifier(normalizeQuickPasteModifier(settings["app.quick_paste_modifier"]));
     if (settings["app.sequential_mode"] === "true") setSequentialModeState(true);
     if (settings["app.sound_enabled"] === "true") setSoundEnabled(true);
@@ -526,6 +529,7 @@ export const useSettingsPostInit = ({
     setSequentialHotkey,
     setRichPasteHotkey,
     setSearchHotkey,
+    setScreenshotHotkey,
     setQuickPasteModifier,
     setSequentialModeState,
     setSoundEnabled,

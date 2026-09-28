@@ -4,6 +4,7 @@ const EMPTY_TAG_SUGGESTIONS: string[] = [];
 import type { Dispatch, SetStateAction, MouseEvent, ReactNode } from "react";
 import type { DragControls } from "framer-motion";
 import ClipboardItem from "../../features/clipboard/components/ClipboardItem";
+import SimplifiedClipboardItem from "../../features/clipboard/components/SimplifiedClipboardItem";
 import type { QuickPasteHint } from "../../features/clipboard/types";
 import type { ClipboardEntry } from "../types";
 import type { Locale } from "../types";
@@ -23,6 +24,7 @@ interface UseClipboardItemRendererOptions {
   t: (key: string) => string;
   showSourceAppIcon: boolean;
   compactMode: boolean;
+  simplifiedMode: boolean;
   richTextSnapshotPreview: boolean;
   sensitiveMaskPrefixVisible: number;
   sensitiveMaskSuffixVisible: number;
@@ -73,6 +75,7 @@ export const useClipboardItemRenderer = ({
   t,
   showSourceAppIcon,
   compactMode,
+  simplifiedMode,
   richTextSnapshotPreview,
   sensitiveMaskPrefixVisible,
   sensitiveMaskSuffixVisible,
@@ -95,6 +98,7 @@ export const useClipboardItemRenderer = ({
 }: UseClipboardItemRendererOptions): { renderItemContent: RenderItemContent } => {
   const renderItemContent = useCallback(
     (item: ClipboardEntry, index: number, dragControls?: DragControls, disableLayout?: boolean) => {
+      const ItemComponent = simplifiedMode ? SimplifiedClipboardItem : ClipboardItem;
       const isSensitiveHidden =
         privacyProtection &&
         (item.tags?.includes("sensitive") ||
@@ -104,7 +108,7 @@ export const useClipboardItemRenderer = ({
       const isEditingTags = editingTagsId === item.id;
 
       return (
-        <ClipboardItem
+        <ItemComponent
           id={`clipboard-item-${item.id}`}
           key={item.id}
           item={item}
@@ -211,6 +215,7 @@ export const useClipboardItemRenderer = ({
       t,
       showSourceAppIcon,
       compactMode,
+      simplifiedMode,
       richTextSnapshotPreview,
       sensitiveMaskPrefixVisible,
       sensitiveMaskSuffixVisible,

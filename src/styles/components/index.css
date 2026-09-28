@@ -12,6 +12,8 @@
 @import "./modern-overrides.css";
 @import "./modal.css";
 @import "./queue-bar.css";
+@import "./screenshot.css";
+@import "./simplified-mode.css";
 @import "./rich-text-preview.css";
 @import "./scrollbar.css";
 @import "./settings.css";

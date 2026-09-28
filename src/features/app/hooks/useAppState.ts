@@ -57,6 +57,7 @@ export const useAppState = (): AppState => {
   const [sequentialHotkey, setSequentialHotkey] = useState<string>("Alt+V");
   const [richPasteHotkey, setRichPasteHotkey] = useState<string>("Alt+Shift+V");
   const [searchHotkey, setSearchHotkey] = useState<string>("Alt+F");
+  const [screenshotHotkey, setScreenshotHotkey] = useState<string>("Alt+A");
   const [quickPasteModifier, setQuickPasteModifier] =
     useState<QuickPasteModifier>("disabled");
   const [sequentialMode, setSequentialModeState] = useState(false);
@@ -64,6 +65,7 @@ export const useAppState = (): AppState => {
   const [isRecordingSequential, setIsRecordingSequential] = useState(false);
   const [isRecordingRich, setIsRecordingRich] = useState(false);
   const [isRecordingSearch, setIsRecordingSearch] = useState(false);
+  const [isRecordingScreenshot, setIsRecordingScreenshot] = useState(false);
   const [deleteAfterPaste, setDeleteAfterPaste] = useState(false);
   const [moveToTopAfterPaste, setMoveToTopAfterPaste] = useState(true);
   const [privacyProtection, setPrivacyProtection] = useState(true);
@@ -93,6 +95,7 @@ export const useAppState = (): AppState => {
   const [showSourceAppIcon, setShowSourceAppIcon] = useState(true);
 
   const [compactMode, setCompactMode] = useState(false);
+  const [simplifiedMode, setSimplifiedMode] = useState(false);
   const [clipboardItemFontSize, setClipboardItemFontSize] = useState(13);
   const [clipboardTagFontSize, setClipboardTagFontSize] = useState(10);
   const [emojiPanelEnabled, setEmojiPanelEnabled] = useState(false);
@@ -110,7 +113,7 @@ export const useAppState = (): AppState => {
   const [edgeDocking, setEdgeDocking] = useState(false);
   const [customBackground, setCustomBackground] = useState<string>("");
   const [customBackgroundOpacity, setCustomBackgroundOpacity] = useState(45);
-  const [surfaceOpacity, setSurfaceOpacity] = useState(50);
+  const [surfaceOpacity, setSurfaceOpacity] = useState(100);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isKeyboardMode, setIsKeyboardMode] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -245,6 +248,8 @@ export const useAppState = (): AppState => {
     setRichPasteHotkey,
     searchHotkey,
     setSearchHotkey,
+    screenshotHotkey,
+    setScreenshotHotkey,
     quickPasteModifier,
     setQuickPasteModifier,
     sequentialMode,
@@ -257,6 +262,8 @@ export const useAppState = (): AppState => {
     setIsRecordingRich,
     isRecordingSearch,
     setIsRecordingSearch,
+    isRecordingScreenshot,
+    setIsRecordingScreenshot,
     deleteAfterPaste,
     setDeleteAfterPaste,
     moveToTopAfterPaste,
@@ -304,6 +311,8 @@ export const useAppState = (): AppState => {
 
     compactMode,
     setCompactMode,
+    simplifiedMode,
+    setSimplifiedMode,
     clipboardItemFontSize,
     setClipboardItemFontSize,
     clipboardTagFontSize,
